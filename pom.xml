@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>br.org.soujava</groupId>
+	<artifactId>soujava-rio-cms</artifactId>
+	<name>CMS do SouJava Site</name>
+	<description>Sistema de Gerenciamento de Conteúdo do site SouJava{RIO}, utilizando solução desktop híbrida.</description>
+	<version>0.0.1</version>
+
+	<organization>
+		<name>SouJava - Sociedade de Usuários de Java</name>
+		<url>http://soujava.org.br</url>
+	</organization>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.zenjava</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>8.8.3</version>
+				<configuration>
+					<vendor>SouJava</vendor>
+					<!-- executable JAR file is built by default (not optional at this stage) -->
+					<mainClass>br.org.soujava.CmsApplication</mainClass>
+					<needShortcut>true</needShortcut>
+					<needMenu>true</needMenu>
+					<allPermissions>true</allPermissions>
+					<title>CMS - SouJava Site{RIO}</title>
+					<!-- optionally build webstart bundle -->
+					<webstart>
+						<requiresAllPermissions>true</requiresAllPermissions>
+					</webstart>
+
+					<!-- optionally build native installers -->
+					<!-- <nativeInstallers /> -->
+					<!-- <certDomain>soujava-rio.github.io</certDomain> <certOrgUnit>SouJava</certOrgUnit> 
+						<certOrg>SouJava - Rio</certOrg> <certState>Rio de Janeiro</certState> <certCountry>BR</certCountry> 
+						<keyStoreAlias>cms-soujava-site</keyStoreAlias> <keyStorePassword>S0uJ@v@</keyStorePassword> 
+						<keyPassword>S0uJ@v@R10</keyPassword> <keyStoreType>jks</keyStoreType> <overwriteKeyStore>false</overwriteKeyStore> -->
+					<keyStoreAlias>cms-soujava-site</keyStoreAlias>
+					<keyStorePassword>S0uJ@v@</keyStorePassword>
+					<keyPassword>S0uJ@v@R10</keyPassword>
+				</configuration>
+				<executions>
+
+					<!-- <execution> <id>create-keystore</id> <phase>package</phase> <goals> 
+						<goal>build-keystore</goal> </goals> </execution> -->
+					<execution>
+						<id>create-jfxjar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build-jar</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>create-web</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build-web</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+	<dependencies>
+
+		<dependency>
+			<groupId>io.undertow</groupId>
+			<artifactId>undertow-core</artifactId>
+			<version>1.4.20.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>io.undertow</groupId>
+			<artifactId>undertow-servlet</artifactId>
+			<version>1.4.20.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>2.26</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.ext.cdi</groupId>
+			<artifactId>jersey-cdi1x</artifactId>
+			<version>2.26</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>2.26</version>
+		</dependency> 
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+			<version>2.26</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-bean-validation</artifactId>
+			<version>2.26</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.weld</groupId>
+			<artifactId>weld-core</artifactId>
+			<version>2.2.14.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.weld.servlet</groupId>
+			<artifactId>weld-servlet-core</artifactId>
+			<version>2.2.14.Final</version>
+		</dependency> 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.16</version>
+			<scope>provided</scope>
+		</dependency>		
+	</dependencies>
+	<scm>
+		<url>https://github.com/SouJava-Rio/soujava-rio-cms.git</url>
+	</scm>
+</project>

@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <section>
+        <header class="header">
+          <div class="row">
+            <div class="col-md-4">
+              <h1>Slide</h1>
+            </div>
+            <div class="col-md-6">
+
+            </div>
+            <div class="col-md-2">
+              <button type="button" class="btn btn-primary" (click)="redirectNewSlidePage()">New Slide</button>
+            </div>
+          </div>
+
+        </header>
+      </section>
+
+      <section class="main">
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Disabled?</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let slide of slides">
+              <th scope="row">{{slide.id}}</th>
+              <td>{{slide.title}}</td>
+              <td>{{slide.description}}</td>
+              <td>{{slide.disabled}}</td>
+              <td>
+                <button type="button" class="btn btn-success" (click)="editSlidePage(slide)">Edit</button>
+                <button type="button" class="btn btn-danger" (click)="deleteSlide(slide)">Delete</button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+</div>
