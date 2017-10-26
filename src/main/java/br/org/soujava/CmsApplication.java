@@ -40,6 +40,7 @@ public class CmsApplication extends Application {
 	private static Undertow server;
 	
 	public static void main(String[] args) throws Exception {
+		startContainer(8080);
 		launch(args);
 	}
 
@@ -68,7 +69,7 @@ public class CmsApplication extends Application {
         DeploymentInfo servletBuilder = Servlets.deployment();
 
         servletBuilder
-                .setClassLoader(Application.class.getClassLoader())
+                .setClassLoader(CmsApplication.class.getClassLoader())
                 .setContextPath("/")
                 .setDeploymentName("cms-soujava-site.war")
                 .addListeners(listener(Listener.class))
@@ -78,7 +79,7 @@ public class CmsApplication extends Application {
                         .addMapping("/api/*"));
 
         DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
-        manager.deploy();
+        manager. deploy();
         PathHandler path = Handlers.path(Handlers.redirect("/"))
                 .addPrefixPath("/", manager.start());
 

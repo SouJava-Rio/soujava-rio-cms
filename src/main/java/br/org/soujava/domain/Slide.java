@@ -1,5 +1,7 @@
 package br.org.soujava.domain;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class Slide {
+public class Slide implements Serializable{
 
 	private String id;
 	private String title;

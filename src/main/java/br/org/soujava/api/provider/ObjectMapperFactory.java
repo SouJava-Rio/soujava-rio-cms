@@ -1,4 +1,4 @@
-package br.org.soujava.integration.jersey;
+package br.org.soujava.api.provider;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;

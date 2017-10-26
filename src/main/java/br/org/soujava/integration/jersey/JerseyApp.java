@@ -7,6 +7,6 @@ import javax.ws.rs.ApplicationPath;
 @ApplicationPath("/api/*")
 public class JerseyApp extends ResourceConfig {
     public JerseyApp() {
-        packages(true, "com.thedevpiece.mss.api");
+        packages(true, "br.org.soujava");
     }
 }

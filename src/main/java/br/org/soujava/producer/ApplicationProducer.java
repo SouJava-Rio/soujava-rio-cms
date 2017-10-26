@@ -1,19 +1,12 @@
-package br.org.soujava.api.producers;
+package br.org.soujava.producer;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-
-import org.glassfish.jersey.internal.util.Property;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.org.soujava.integration.jersey.ObjectMapperFactory;
+import br.org.soujava.api.provider.ObjectMapperFactory;
+import br.org.soujava.integration.firebase.FirebaseDataBaseClient;
+import br.org.soujava.service.SlideService;
 
 /**
  * @author Gabriel Francisco - gabfssilva@gmail.com
@@ -25,6 +18,15 @@ public class ApplicationProducer {
         return ObjectMapperFactory.get();
     }
 
+	@Produces
+	public FirebaseDataBaseClient firebaseDataBaseClient(){
+		return new FirebaseDataBaseClient();
+	}
+	
+	@Produces
+	public SlideService slideService(){
+		return new SlideService();
+	}
 
 //    @Produces
 //    @Property(value = "")
