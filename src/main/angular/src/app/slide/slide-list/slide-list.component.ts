@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Slide } from "../slide";
-import { SlideService } from "../slide.service";
+import { Slide } from '../slide';
+import { SlideService } from '../slide.service';
 import { Router } from '@angular/router';
 
 @Component({

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {SlideService} from "../slide.service";
-import {Slide} from "../Slide";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {SlideService} from '../slide.service';
+import {Slide} from '../slide';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
@@ -40,7 +40,7 @@ export class SlideFormComponent implements OnInit, OnDestroy {
             title: slide.title,
             description: slide.description,
           });
-         },error => {
+         }, error => {
           console.log(error);
          }
       );
