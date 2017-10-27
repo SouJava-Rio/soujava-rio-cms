@@ -1,0 +1,1 @@
+ng build -bh=/WEB-VIEW/
