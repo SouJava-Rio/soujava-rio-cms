@@ -1,18 +1,21 @@
 package br.org.soujava;
 
 
-import static io.undertow.servlet.Servlets.listener;
-import static io.undertow.servlet.Servlets.servlet;
-
 import javax.servlet.ServletException;
 
-import org.glassfish.jersey.servlet.ServletContainer;
-import org.jboss.weld.environment.servlet.Listener;
+import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.jboss.resteasy.spi.ResteasyDeployment;
 
-import br.org.soujava.integration.jersey.JerseyApp;
-import io.undertow.Handlers;
+import br.org.soujava.integration.resteasy.RestEasyApplication;
 import io.undertow.Undertow;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
+import io.undertow.server.handlers.cache.DirectBufferCache;
+import io.undertow.server.handlers.resource.CachingResourceManager;
+import io.undertow.server.handlers.resource.ClassPathResourceManager;
+import io.undertow.server.handlers.resource.PathResourceManager;
+import io.undertow.server.handlers.resource.ResourceHandler;
+import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
@@ -29,6 +32,16 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import sun.misc.Resource;
+
+import static io.undertow.Handlers.resource;
+
+import java.nio.file.Paths;
+import java.time.Duration;
+
+import static io.undertow.servlet.Servlets.defaultContainer;
+import static io.undertow.servlet.Servlets.deployment;
+import static io.undertow.servlet.Servlets.servlet;
 /**
  * Classe Principal do CMS
  * 
@@ -37,13 +50,14 @@ import javafx.stage.Stage;
  */
 public class CmsApplication extends Application {
 	
-	private static Undertow server;
+	private static UndertowJaxrsServer server;
 	
 	public static void main(String[] args) throws Exception {
 		startContainer(8080);
 		launch(args);
 	}
 
+	@Override
 	public void start(Stage stage) throws Exception {
 		Screen screen = Screen.getPrimary();
 		Rectangle2D bounds = screen.getVisualBounds();
@@ -60,39 +74,57 @@ public class CmsApplication extends Application {
 		stage.show();
 	}
 
-
-    public static void stopContainer(){
-        server.stop();
-    }
-
+	@Override
+	public void stop() throws Exception{
+		server.stop();
+	}
+	
     public static void startContainer(int port) throws ServletException {
-        DeploymentInfo servletBuilder = Servlets.deployment();
+    	
+        server = new UndertowJaxrsServer();
 
-        servletBuilder
-                .setClassLoader(CmsApplication.class.getClassLoader())
-                .setContextPath("/")
-                .setDeploymentName("cms-soujava-site.war")
-                .addListeners(listener(Listener.class))
-                .addServlets(servlet("jerseyServlet", ServletContainer.class)
-                        .setLoadOnStartup(1)
-                        .addInitParam("javax.ws.rs.Application", JerseyApp.class.getName())
-                        .addMapping("/api/*"));
+        ResteasyDeployment deployment = new ResteasyDeployment();
+        deployment.setApplicationClass(RestEasyApplication.class.getName());
+        deployment.setInjectorFactoryClass("org.jboss.resteasy.cdi.CdiInjectorFactory");
 
-        DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
-        manager. deploy();
-        PathHandler path = Handlers.path(Handlers.redirect("/"))
-                .addPrefixPath("/", manager.start());
+        DeploymentInfo deploymentInfo = server.undertowDeployment(deployment, "/");
+        deploymentInfo.setClassLoader(CmsApplication.class.getClassLoader());
+        deploymentInfo.setDeploymentName("Undertow + Resteasy example");
+        deploymentInfo.setContextPath("/api");
 
-        server =
-                Undertow
-                        .builder()
-                        .addHttpListener(port, "localhost")
-                        .setHandler(path)
-                        .build();
+        deploymentInfo.addListener(Servlets.listener(org.jboss.weld.environment.servlet.Listener.class));
 
-        server.start();
+        server.deploy(deploymentInfo);
+
+        final PathHandler handler = new PathHandler(); 
+        handler.addPrefixPath("/WEB-VIEW",createStaticResourceHandler());
+
+        server.addResourcePrefixPath("/",
+                resource(new ClassPathResourceManager(CmsApplication.class.getClassLoader()))
+                        .addWelcomeFiles("/WEB-VIEW/index.html"));
+ 
+        Undertow.Builder builder = Undertow.builder()
+                .setHandler(handler).addHttpListener(8080, "localhost");
+
+        server.start(builder);    	
+    	 
     }
+    
+    private static HttpHandler createStaticResourceHandler() { 
+        final ResourceManager staticResources = 
+                new ClassPathResourceManager(CmsApplication.class.getClassLoader(), "static"); 
+        // Cache tuning is copied from Undertow unit tests. 
+        final ResourceManager cachedResources = 
+                new CachingResourceManager(100, 65536, 
+                                           new DirectBufferCache(1024, 10, 10480), 
+                                           staticResources, 
+                                           (int)Duration.ofDays(1).getSeconds()); 
+        final ResourceHandler resourceHandler = new ResourceHandler(cachedResources); 
+        resourceHandler.setWelcomeFiles("index.html"); 
+        return resourceHandler; 
+    } 
 }
+
 
 class Browser extends Region {
 	final WebView browser = new WebView();
@@ -104,8 +136,11 @@ class Browser extends Region {
 		this.stage = stage;
 		
 		// load the web page
-		webEngine.load(Browser.class.getResource("/WEB-VIEW/index.html").toExternalForm());
+		//webEngine.load(Browser.class.getResource("/index.html").toExternalForm());
 
+		webEngine.load("http://localhost:8080");
+
+		
 		// Update the stage title when a new web page title is available
 
 		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
