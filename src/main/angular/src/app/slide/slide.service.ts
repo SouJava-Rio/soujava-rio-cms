@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Slide } from './slide';
+import { AjaxMessageResponse } from './ajaxMessageResponse';
+
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Observable';
+
 @Injectable()
 export class SlideService {
 
@@ -12,13 +15,13 @@ export class SlideService {
   constructor(private http: Http) {
   }
 
-  findAll(): Observable<Slide[]> {
+  findAll(): Observable<AjaxMessageResponse<Slide[]>> {
     return this.http.get(this.apiUrl)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
 
- findById(id: string): Observable<Slide> {
+ findById(id: string): Observable<AjaxMessageResponse<Slide>> {
     return this.http.get(this.apiUrl + '/' + id)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Error'));
@@ -38,7 +41,7 @@ export class SlideService {
   }
 
   updateSlide(slide: Slide): Observable<Slide> {
-      return this.http.put(this.apiUrl, slide)
+      return this.http.put(this.apiUrl + '/' + slide.id, slide)
         .map((res: Response) => res.json())
         .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }

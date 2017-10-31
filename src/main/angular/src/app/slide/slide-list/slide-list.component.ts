@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Slide } from '../slide';
+import {AjaxMessageResponse} from '../ajaxMessageResponse';
 import { SlideService } from '../slide.service';
 import { Router } from '@angular/router';
 
@@ -11,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class SlideListComponent implements OnInit {
 
-  private slides: Slide[];
+  private slides: Slide[] = [];
 
     constructor(private router: Router, private slideService: SlideService) { }
 
@@ -21,8 +22,8 @@ export class SlideListComponent implements OnInit {
 
     getAllSlides() {
       this.slideService.findAll().subscribe(
-        slides => {
-          this.slides = slides;
+        listSlidesResponse => {
+          this.slides =  listSlidesResponse.data as Slide[];  
         },
         err => {
           console.log(err);

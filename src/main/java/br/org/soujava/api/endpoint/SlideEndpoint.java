@@ -42,11 +42,10 @@ public class SlideEndpoint {
 	
 	@GET
 	public Response findAll() {
+		
 		final List<Slide> slides = slideService.findAll();
 		
-		return ok(slides).build();
-		
-		//return ok(JsonMessage.builder().data(slides).build()).build();
+		return ok(JsonMessage.builder().data(slides).build()).build();
 	}
 
 	@GET

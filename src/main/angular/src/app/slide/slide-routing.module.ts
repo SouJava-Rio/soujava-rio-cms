@@ -4,7 +4,7 @@ import { SlideListComponent } from './slide-list/slide-list.component';
 import { SlideFormComponent } from './slide-form/slide-form.component';
 
 const routes: Routes = [
-  {path: 'slide', component: SlideListComponent},
+  {path: 'slide', component: SlideListComponent, pathMatch: 'full'},
   {path: 'slide/create', component: SlideFormComponent},
   {path: 'slide/edit/:id', component: SlideFormComponent}
 ];
