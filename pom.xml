@@ -19,6 +19,9 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<resteasy.version>3.1.0.Final</resteasy.version>
 		<weld.version>2.4.1.Final</weld.version>
+		<logback.version>1.1.3</logback.version>
+		<jcl.slf4j.version>1.7.12</jcl.slf4j.version>
+
 	</properties>
 
 	<build>
@@ -95,12 +98,12 @@
 			<artifactId>resteasy-cdi</artifactId>
 			<version>${resteasy.version}</version>
 		</dependency>
-    <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jaxrs</artifactId>
-        <version>${resteasy.version}</version>
-    </dependency>
-    		
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.jboss.weld.servlet</groupId>
 			<artifactId>weld-servlet</artifactId>
@@ -118,17 +121,29 @@
 			<artifactId>javax.el-api</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-   <dependency>
-        <groupId>javax</groupId>
-        <artifactId>javaee-api</artifactId>
-        <version>7.0</version>
-    </dependency>
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>5.2.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.16</version> 
+			<version>1.16.16</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${jcl.slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
 	</dependencies>
 	<scm>
 		<url>https://github.com/SouJava-Rio/soujava-rio-cms.git</url>
