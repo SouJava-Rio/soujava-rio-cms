@@ -1,20 +1,28 @@
 package br.org.soujava.integration.firebase;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 
 import br.org.soujava.config.Property;
 
@@ -29,6 +37,7 @@ import br.org.soujava.config.Property;
 public class FirebaseDataBaseClient implements Serializable {
 
 	private String googleOAuthToken;
+	
 	private ResteasyWebTarget slideRestClient;
 
 	@Inject
@@ -38,7 +47,27 @@ public class FirebaseDataBaseClient implements Serializable {
 	@Inject
 	@Property("firebase.url.ws.slides")
 	private String firebaseUrlWsSlides;
+	
+	@Inject
+	@Property("proxy.config.host")
+	private String proxyHost;
+	
+	@Inject
+	@Property("proxy.config.port")
+	private Integer proxyPort;
 
+	@Inject
+	@Property("proxy.credential.username")
+	private String proxyUsername;
+	
+	@Inject
+	@Property("proxy.credential.password")
+	private String proxyPassword;
+
+	@Inject
+	@Property("proxy.enabled")
+	private boolean proxyEnabled;
+	
 	public String getGoogleOAuthToken() {
 		return googleOAuthToken;
 	}
@@ -49,25 +78,32 @@ public class FirebaseDataBaseClient implements Serializable {
 
 	@PostConstruct
 	public void init() throws IOException {
-		// Load the service account key JSON file
-		FileInputStream serviceAccount = new FileInputStream(firebaseAccountKeyFile);
 
-		// Authenticate a Google credential with the service account
-		GoogleCredential googleCred = GoogleCredential.fromStream(serviceAccount);
-
-		// Add the required scopes to the Google credential
-		GoogleCredential scoped = googleCred.createScoped(Arrays.asList(
-				"https://www.googleapis.com/auth/firebase.database", 
-				"https://www.googleapis.com/auth/userinfo.email"));
-
-		// Use the Google credential to generate an access token
-		scoped.refreshToken();
+		ResteasyClient client = null;
 		
-		googleOAuthToken = scoped.getAccessToken();
-
-		// Create Slide Database client
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		
+		if(proxyEnabled) {
+			Credentials credentials = new UsernamePasswordCredentials(proxyUsername, proxyPassword);
+			
+			CredentialsProvider credProvider = new BasicCredentialsProvider();
+			credProvider.setCredentials(new AuthScope(proxyHost, proxyPort), credentials);
+			
+			HttpClient httpClient = HttpClientBuilder.create()
+					.setProxy(new HttpHost(proxyHost, proxyPort))
+					.setDefaultCredentialsProvider(credProvider)
+					.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+					.build();
+			
+			ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(httpClient);
+			
+			// Create Slide Database client 
+			client = new ResteasyClientBuilder()
+					.httpEngine(engine)
+					.build();
+		}else {
+			// Create Slide Database client 
+			client = new ResteasyClientBuilder().build();
+		}
+	    
 		slideRestClient = client.target(firebaseUrlWsSlides);
 	}
 
