@@ -7,7 +7,6 @@ package br.org.soujava.service;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +14,13 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import br.org.soujava.domain.Slide;
 import br.org.soujava.integration.firebase.FirebaseDataBaseClient;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Slide Services
@@ -33,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Named
 @ApplicationScoped
-@Slf4j
 public class SlideService implements Serializable {
 
 	@Inject
@@ -47,21 +43,15 @@ public class SlideService implements Serializable {
 	}
 
 	public List<Slide> findAll() {
-		DatabaseReference slidesRepository = firebaseDataBaseClient.getSlidesRepository();
-		// Attach a listener to read the data at our posts reference
-		slidesRepository.addValueEventListener(new ValueEventListener() {
-			@Override
-			public void onDataChange(DataSnapshot dataSnapshot) {
-				//Post post = dataSnapshot.getValue(Post.class);
-				System.out.println(dataSnapshot.getValue());
+		final ResteasyWebTarget slideRestClient = firebaseDataBaseClient.getSlideRestClient();
+		Response response = slideRestClient.request().get();
+		try{
+			return response.readEntity(new GenericType<List<Slide>>() {});		
+		}finally{
+			if(response != null){
+				response.close();
 			}
-
-			@Override
-			public void onCancelled(DatabaseError databaseError) {
-				System.out.println("The read failed: " + databaseError.getCode());
-			}
-		});
-		return new ArrayList<>(map.values());
+		}
 	}
 
 	public Slide findbyId(String id) {

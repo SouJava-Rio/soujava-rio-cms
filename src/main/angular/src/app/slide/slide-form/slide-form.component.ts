@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {SlideService} from '../slide.service';
 import {Slide} from '../slide';
 import {AjaxMessageResponse} from '../ajaxMessageResponse';
-import {ActivatedRoute, Router} from '@angular/router'; 
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-slide-form',
@@ -20,9 +20,9 @@ export class SlideFormComponent implements OnInit, OnDestroy {
   private sub: any;
 
   constructor(private formBuilder: FormBuilder,
-              private route: ActivatedRoute,
-              private router: Router,
-              private slideService: SlideService) { 
+    private route: ActivatedRoute,
+    private router: Router,
+    private slideService: SlideService) {
 
     this.slideForm = formBuilder.group({
       title: ['', [
@@ -33,21 +33,8 @@ export class SlideFormComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.minLength(100)
       ]]
-      //,      
-      // email: ['', [
-      //   Validators.required,
-      //   //BasicValidators.email
-      //   //Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-      // ]],
-      // phone: [],
-      // address: formBuilder.group({
-      //   street: ['', Validators.minLength(3)],
-      //   suite: [],
-      //   city: ['', Validators.maxLength(30)],
-      //   zipcode: ['', Validators.pattern('^([0-9]){5}([-])([0-9]){4}$')]
-      // })
     });
-                  
+
   }
 
   ngOnInit() {
@@ -60,20 +47,20 @@ export class SlideFormComponent implements OnInit, OnDestroy {
     });
 
     console.log(this.id);
-    
-    if (this.id) { //edit form
+
+    if (this.id) { // edit form
       this.slideService.findById(this.id).subscribe(
         ajaxMessageResponse => {
-            this.id = ajaxMessageResponse.data.id;
+          this.id = ajaxMessageResponse.data.id;
 
-            this.slideForm.patchValue({
+          this.slideForm.patchValue({
             title: ajaxMessageResponse.data.title,
             description: ajaxMessageResponse.data.description
           });
 
-         }, error => {
+        }, error => {
           console.log(error);
-         }
+        }
       );
 
     }
@@ -84,39 +71,39 @@ export class SlideFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-     if (this.slideForm.valid) {
-        var result;
+    if (this.slideForm.valid) {
+      let result;
 
-        if (this.id) {
+      if (this.id) {
 
-           let slide: Slide = new Slide(this.id,
-             this.slideForm.controls['title'].value,
-             this.slideForm.controls['description'].value,
-             true, 0
-           );
-           result = this.slideService.updateSlide(slide).subscribe();
+        let slide: Slide = new Slide(this.id,
+          this.slideForm.controls['title'].value,
+          this.slideForm.controls['description'].value,
+          true, 0
+        );
+        result = this.slideService.updateSlide(slide).subscribe();
 
-         } else {
+      } else {
 
-            let slide: Slide = new Slide(null,
-              this.slideForm.controls['title'].value,
-              this.slideForm.controls['description'].value,
-              true, 0
-            );
-            result = this.slideService.saveSlide(slide).subscribe();
+        let slide: Slide = new Slide(null,
+          this.slideForm.controls['title'].value,
+          this.slideForm.controls['description'].value,
+          true, 0
+        );
+        result = this.slideService.saveSlide(slide).subscribe();
 
-         }
-         this.slideForm.reset();
-         result.subscribe(data => this.router.navigate(['slide']));
-
-         //this.router.navigate(['/slide']);
-  
       }
-   }
+      this.slideForm.reset();
+      result.subscribe(data => this.router.navigate(['slide']));
 
-   redirectSlidePage() {
-     this.router.navigate(['/slide']);
+      // this.router.navigate(['/slide']);
 
-   }
+    }
+  }
+
+  redirectSlidePage() {
+    this.router.navigate(['/slide']);
+
+  }
 
 }

@@ -16,14 +16,14 @@ export class SlideListComponent implements OnInit {
 
     constructor(private router: Router, private slideService: SlideService) { }
 
-    ngOnInit() { //when component loading get all users and set the users[]
+    ngOnInit() { // when component loading get all users and set the users[]
       this.getAllSlides();
     }
 
     getAllSlides() {
       this.slideService.findAll().subscribe(
         listSlidesResponse => {
-          this.slides =  listSlidesResponse.data as Slide[];  
+          this.slides =  listSlidesResponse.data as Slide[];
         },
         err => {
           console.log(err);

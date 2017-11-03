@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -43,7 +42,7 @@ public class SlideEndpoint {
 	@GET
 	public Response findAll() {
 		
-		final List<Slide> slides = slideService.findAll();
+		List<Slide> slides = slideService.findAll();
 		
 		return ok(JsonMessage.builder().data(slides).build()).build();
 	}
