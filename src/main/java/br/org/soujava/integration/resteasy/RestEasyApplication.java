@@ -1,6 +1,7 @@
 package br.org.soujava.integration.resteasy;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -37,4 +38,5 @@ public class RestEasyApplication extends Application {
     public Set<Object> getSingletons() {
     	return singletons;
     }
+
 }

@@ -72,21 +72,24 @@ public class CmsApplication extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.requestFocus();
 		primaryStage.show();
+		
 		MenuToolkit tk = MenuToolkit.toolkit();
 
+		if(tk != null) {
+			
+			// Application Menu
+			Menu appMenu = new Menu(appName); // Name for appMenu can't be set at
+			// Runtime
+			MenuItem aboutItem = tk.createAboutMenuItem(appName);
+			
+			appMenu.getItems().addAll(aboutItem, new SeparatorMenuItem(),new SeparatorMenuItem(),
+					tk.createHideMenuItem(appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
+					new SeparatorMenuItem(), tk.createQuitMenuItem(appName));
+			
+			// Update the existing Application menu
+			tk.setApplicationMenu(appMenu);
+		}
 
-		// Application Menu
-		// TBD: services menu
-		Menu appMenu = new Menu(appName); // Name for appMenu can't be set at
-											// Runtime
-		MenuItem aboutItem = tk.createAboutMenuItem(appName);
-
-		appMenu.getItems().addAll(aboutItem, new SeparatorMenuItem(),new SeparatorMenuItem(),
-				tk.createHideMenuItem(appName), tk.createHideOthersMenuItem(), tk.createUnhideAllMenuItem(),
-				new SeparatorMenuItem(), tk.createQuitMenuItem(appName));
-		
-		// Update the existing Application menu
-		tk.setApplicationMenu(appMenu);
 
 	}
 
